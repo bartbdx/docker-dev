@@ -1,0 +1,49 @@
+version: '3'
+services:
+  web:
+    build: images/nginx
+    volumes:
+      - ./html/:/var/www/html/
+      - ./images/nginx/:/etc/nginx/conf.d/
+    links:
+      - php    
+    ports:
+      - "80:80"
+    networks:
+      - webnet
+  php:
+    build: images/php
+    volumes:
+      - ./html/:/var/www/html/
+    links:
+      - db
+    networks:
+      - webnet
+
+  composer:
+    build: images/composer
+    volumes:
+      - ./html:/var/www/html/
+    tty: true
+    links:
+      - php
+    networks:
+      - webnet
+  myadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    links:
+      - db
+    ports:
+      - "81:80"
+    networks:
+      - webnet
+  db:
+    build: images/mariadb    
+    volumes:
+      - ./data/:/var/lib/mysql
+    environment:
+      - MARIADB_ROOT_PASSWORD=motdepasse
+    networks:
+      - webnet
+networks:
+  webnet:
