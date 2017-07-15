@@ -6,7 +6,7 @@ services:
       - ./html/:/var/www/html/
       - ./images/nginx/:/etc/nginx/conf.d/
     links:
-      - php    
+      - php
     ports:
       - "80:80"
     networks:
@@ -37,8 +37,13 @@ services:
       - "81:80"
     networks:
       - webnet
+  maildev:
+    restart: always
+    image: djfarrelly/maildev
+    ports:
+      - "1080:80"
   db:
-    build: images/mariadb    
+    build: images/mariadb
     volumes:
       - ./data/:/var/lib/mysql
     environment:
